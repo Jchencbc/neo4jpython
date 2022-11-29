@@ -2,7 +2,7 @@ import csv
 
 from py2neo import *
 
-graph = Graph("http://localhost:7474/browser/", username='neo4j', password='##haiyu12345')
+graph = Graph("http://localhost:7474/browser/", username='neo4j', password='##12345')
 
 # demo
 person_demo = {"id": "1", "name": "张三", "age": "80", "company": "ABC公司", "sector": "互联网", "sex": "男",
