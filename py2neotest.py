@@ -41,6 +41,11 @@ def up_node_person(info):
             disease_belong_identity = Relationship(disease_node, 'belong', identity_node)
             graph.create(disease_belong_identity)  # 构建疾病-标识关系
 
+def del_node(node_id):
+  pass
+  
+def del_relatin(relation_id):
+  pass
 
 if __name__ == '__main__':
     pass
