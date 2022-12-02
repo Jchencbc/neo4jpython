@@ -1,0 +1,53 @@
+import pandas
+from py2neo import *
+import pymysql
+
+graph = Graph("http://localhost:7474/browser/", username='neo4j', password='12345')
+matcher = NodeMatcher(graph)
+
+
+def get_data(sql):
+    conn = pymysql.connect(host="",
+                           user="root",
+                           password="6Z",
+                           database="wh",
+                           port=26,
+                           charset='u')
+    cur = conn.cursor()  # 生成游标对象
+    sql = sql  # SQL语句
+    cur.execute(sql)  # 执行SQL语句
+    data = cur.fetchall()  # 通过fetchall方法获得数据
+    cur.close()  # 关闭游标
+    conn.close()  # 关闭连接
+    return data
+
+
+# user = get_data("SELECT user_id,birthday,sex,industry FROM `kg_user`")
+# report = get_data(SELECT user_id,check_code,check_time,age,score FROM `kg_check_score`)
+# label = get_data("SELECT check_code,out_tag,out_tag_code,tag,tag_code,score FROM `kg_display_tag`")
+
+
+def craet_user_node(sql):
+    """创建人节点信息"""
+    sql = sql
+    user_info = get_data(sql)
+    for i in user_info:
+        person_node = Node('Person', name=i[0], birthday=str(i[1]), sex=i[2], sector=i[3])
+        graph.create(person_node)
+
+
+def creat_report_node(sql):
+    """创建报告节点和人建立关系"""
+    sql = sql
+    report_info = get_data(sql)
+    for i in report_info:
+        report_node = Node('Report', name=str(i[2]), check_code=i[1], age=i[3])
+        graph.create(report_node)
+        person_id = i[0]
+        person_node = matcher.match('Person', name=person_id).first()
+        p_own_r = Relationship(person_node, '报告', report_node)
+        graph.create(p_own_r)
+
+
+def creat_label_node(sql):
+    pass
