@@ -47,5 +47,17 @@ def del_node(node_id):
 def del_relatin(relation_id):
   pass
 
+def match_node_relation():
+  node = matcher.match("Person").where(name=2944).first()
+  print(node)
+
+
+  r_match = RelationshipMatcher(graph)
+  relationship = list(r_match.match([node], r_type=None))
+
+  print(relationship[0].end_node['check_code'])
+  json_str = json.dumps(relationship[0], indent=4, ensure_ascii=False)
+  print(json_str)
+
 if __name__ == '__main__':
     pass
