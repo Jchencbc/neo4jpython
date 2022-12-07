@@ -1,0 +1,68 @@
+from py2neo import Graph, NodeMatcher, RelationshipMatcher, Node
+
+"""连接设置"""
+graph = Graph("http://localhost:7474/browser/", username='neo4j', password='password')  # 数据库连接
+matcher = NodeMatcher(graph)  # 节点查询
+rel_match = RelationshipMatcher(graph)  # 关系查询
+
+# demo_data
+person_demo = {"id": "1", "name": "张三", "age": "80", "company": "ABC公司", "sector": "互联网", "sex": "男",
+               "disease": {"disease1": ['identity_id1', 'identity_id2', 'identity_id3'],
+                           "disease2": ['identity_id1', 'identity_id2']}}
+
+
+"""查找节点"""
+node = matcher.match('Label_name', name=node_data[i][0]).first()  # 通过节点的标签和属性来查找，缺点查询结果可能不唯一，需要first(
+node = matcher.get(int(node_id))  # 通过node id 查找node,查找值唯一，缺点是要提前指导node_id
+
+"""新建节点"""
+if not node:
+  node = Node('Identity', name=node_data[i][0], id=node_data[i][1], grade=node_data[i][2],
+               advice=node_data[i][3])
+  graph.create(logo_node)  # 建立节点
+
+"""节点新增属性"""
+node.update({'advice': advice})
+node.update({'urgent_level': urgent_level})
+graph.push(label_node)
+
+"""建立节点关系"""
+node2 = Node('Report', year=str(i[2]), name=i[1], age=i[3], grade=i[4])
+graph.create(node2)
+p_own_r = Relationship(node, '报告', node2)  # 创建关系（头节点-关系名称-尾节点）
+graph.create(p_own_r) 
+
+”“”查找关系“”“
+node_id = node_id 
+try:
+    node = matcher.get(int(node_id))  # 查节点
+#    node = matcher.match(node_type).where(name=node_id).first()
+except Exception as e:  # noqa
+    return ('id不存在')
+
+center_node = dict(node)  # node信息字典转字典
+center_node['node_type'] = list(set(node.labels))[0]  # 拿到node_label
+center_node['id'] = node.identity  # 拿到node_id
+
+rel_next = list(rel_match.match([node], r_type=None))
+rel_before = list(rel_match.match([None, node], r_type=None))  # rel_match.match(nodes=None, r_type=None, **properties) 节点、关系名none默认为全部关系、关系属性
+
+data = {"node": scenter_node,
+        "rel_before": get_relation(rel_before, reverse=True),
+        "rel_next": get_relation(rel_next),
+        }
+def get_relation(relationship, reverse=False):
+    relationship_list = []
+    for i in range(len(relationship)):
+        relationship_type = type(relationship[i]).__name__  # 关系名称
+#       start,end = relationship[i].nodes      relation包含头尾节点        
+        _, end = relationship[i].nodes
+        if reverse:
+            _, end = end, _
+        end_node = dict(end)
+        end_node['node_type'] = list(set(end.labels))[0]
+        end_node['id'] = end.identity
+        rel = {"rel_type": relationship_type, "node": end_node}
+        relationship_list.append(rel)
+    return relationship_list
+
