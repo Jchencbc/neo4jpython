@@ -178,3 +178,16 @@ MATCH (tom:Person {name:"Tom Hanks"})-[:ACTED_IN]->(m)<-[:ACTED_IN]-(coActors),
 RETURN tom, m, coActors, m2, cruise
 ```
 
+
+match (n),(p) where id(n)=2422 and id(p)=5041 with n,p create (n)-[:导致]->(p)
+
+
+//match (re:Report {report_id:'61555cad1c1cf07cc8ae3405'})-[r:间接影响]->(t:Trigger_Label),
+//(re:Report {report_id:'61555cad1c1cf07cc8ae3405'})-[:扣分]->(d:Display_Label)
+//(t:Trigger_Label)-[:导致]->(d:Display_Label)
+//return re,t,d
+match path=((re:Report {report_id:'61555cad1c1cf07cc8ae3405'})-[*1..2]->(d:Display_Label))
+//      path2=((re:Report {report_id:'61555cad1c1cf07cc8ae3405'})-[*1]-(c))
+//where (re:Report {report_id:'61555cad1c1cf07cc8ae3405'})-[:扣分]->(d:Display_Label)
+return path
+//return re,type(r),t,type(r2),d
